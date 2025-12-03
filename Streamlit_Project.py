@@ -42,10 +42,10 @@ def load_prompt_from_file(filename):
         with open(prompt_path, 'r', encoding='utf-8') as file:
             return file.read().strip()
     except FileNotFoundError:
-        st.error(f"❌ Prompt file not found: {filename}")
+        st.error(f" Prompt file not found: {filename}")
         return None
     except Exception as e:
-        st.error(f"❌ Error loading prompt file {filename}: {e}")
+        st.error(f" Error loading prompt file {filename}: {e}")
         return None
 
 # Default/General prompt for cosmetic media analysis
@@ -90,7 +90,7 @@ def get_brand_specific_prompt(selected_brand=None):
         if prompt:
             return prompt
         else:
-            st.warning(f"⚠️ Failed to load {selected_brand} prompt file. Using general prompt as fallback.")
+            st.warning(f" Failed to load {selected_brand} prompt file. Using general prompt as fallback.")
             return DEFAULT_PROMPT
     # Return general prompt (either from file or fallback)
     return DEFAULT_PROMPT
@@ -714,7 +714,7 @@ def process_csv_file(uploaded_file, prompt, url_column_name):
             uploaded_file.seek(0)  # Reset to start
             
             if file_size == 0:
-                st.error("❌ The CSV file appears to be empty.")
+                st.error(" The CSV file appears to be empty.")
                 return None
         
         # Read CSV file with row 1 as header (standard CSV format)
@@ -726,12 +726,12 @@ def process_csv_file(uploaded_file, prompt, url_column_name):
         target_column = url_column_name
         
         if target_column not in df.columns:
-            st.error(f"❌ Column '{target_column}' not found in the CSV file.")
+            st.error(f" Column '{target_column}' not found in the CSV file.")
             st.info(f"📋 **Available columns**: {', '.join(df.columns.tolist())}")
             st.error(f"Please ensure your CSV file has a column named exactly '{target_column}' containing the URLs.")
             return None
         
-        st.success(f"✅ **Target column found**: {target_column}")
+        st.success(f" **Target column found**: {target_column}")
         url_column = target_column
         
         # Function to extract multiple URLs from a cell
@@ -788,7 +788,7 @@ def process_csv_file(uploaded_file, prompt, url_column_name):
         
         # Show warning if no valid URLs, but continue processing all rows
         if not all_urls:
-            st.warning("⚠️ No valid URLs found in the CSV file. All rows will be returned with N/A values.")
+            st.warning(" No valid URLs found in the CSV file. All rows will be returned with N/A values.")
             
             # Show sample of what was actually found
             sample_values = []
@@ -1002,12 +1002,12 @@ https://example.com/image2.jpg""")
                 successful_results = len(enhanced_df[~enhanced_df['Raw AI Response'].astype(str).str.startswith('Error')])
             else:
                 successful_results = total_results
-        st.info(f"📊 **Processing Summary**: {total_results} URLs processed | {successful_results} successful analyses")
+        st.info(f" **Processing Summary**: {total_results} URLs processed | {successful_results} successful analyses")
         
         return enhanced_df, len(analysis_results), url_column
         
     except Exception as e:
-        st.error(f"❌ Error processing CSV file: {str(e)}")
+        st.error(f" Error processing CSV file: {str(e)}")
         return None
 
 # Main interface
@@ -1055,7 +1055,7 @@ with st.form("media_analysis_form"):
                     st.session_state.csv_file_content = file_content
                 st.session_state.csv_file_name = uploaded_file.name
             except Exception as e:
-                st.error(f"❌ Error reading uploaded file: {str(e)}")
+                st.error(f" Error reading uploaded file: {str(e)}")
                 st.session_state.csv_file_content = None
             
             # Try to read the CSV to get column names using stored content
@@ -1070,27 +1070,27 @@ with st.form("media_analysis_form"):
                     if len(available_columns) == 1:
                         url_column_name = available_columns[0]
                         st.session_state.csv_url_column = url_column_name
-                        st.success(f"✅ **Single column detected**: `{url_column_name}` - Perfect for URL processing!")
+                        st.success(f" **Single column detected**: `{url_column_name}` - Perfect for URL processing!")
                     else:
-                        st.warning(f"⚠️ **Multiple columns detected**: {len(available_columns)} columns found. Using first column: `{available_columns[0]}`")
+                        st.warning(f" **Multiple columns detected**: {len(available_columns)} columns found. Using first column: `{available_columns[0]}`")
                         url_column_name = available_columns[0]
                         st.session_state.csv_url_column = url_column_name
-                        st.info("💡 **Tip**: For best results, use a CSV with only ONE column containing URLs and group labels")
+                        st.info(" **Tip**: For best results, use a CSV with only ONE column containing URLs and group labels")
                     
                     st.info(f"📋 **Column to process**: `{url_column_name}`")
                 else:
-                    st.error("❌ Could not read file content")
+                    st.error(" Could not read file content")
                 
             except Exception as e:
-                st.error(f"❌ Could not read CSV file: {str(e)}")
-                st.info("💡 **Tip**: Make sure your CSV file has a header row and contains valid data")
+                st.error(f" Could not read CSV file: {str(e)}")
+                st.info(" **Tip**: Make sure your CSV file has a header row and contains valid data")
         else:
             # Use stored values from session state if file was previously uploaded
             if st.session_state.csv_url_column:
                 url_column_name = st.session_state.csv_url_column
-                st.info(f"📋 **Using previously selected column**: `{url_column_name}`")
+                st.info(f" **Using previously selected column**: `{url_column_name}`")
                 if st.session_state.csv_file_name:
-                    st.info(f"📁 **File**: `{st.session_state.csv_file_name}`")
+                    st.info(f" **File**: `{st.session_state.csv_file_name}`")
         
         # Brand selection for targeted analysis
         brand_selection = st.selectbox(
@@ -1121,9 +1121,9 @@ with st.form("media_analysis_form"):
                              help=f"Using {'brand-specific' if selected_brand else 'general'} prompt for {brand_selection}. Loaded from: prompts/{BRAND_PROMPT_FILES.get(selected_brand or 'general', 'general_prompt.txt')}")
         
         if selected_brand:
-            st.info(f"🎯 **Brand-Focused Analysis**: Using {brand_selection}-specific prompt for enhanced detection")
+            st.info(f" **Brand-Focused Analysis**: Using {brand_selection}-specific prompt for enhanced detection")
         else:
-            st.info(f"📝 **General Analysis**: Using general prompt that detects all supported brands")
+            st.info(f" **General Analysis**: Using general prompt that detects all supported brands")
         
         # Show prompt file information
         st.expander("📁 Prompt File Information").markdown(f"""
@@ -1166,7 +1166,7 @@ with st.form("media_analysis_form"):
         - **Inhaltsstoffe**: Ingredients mentioned
         - **Influencer Kategorie I**: Influencer types (Lifestyle, Beauty Influencer, Skinfluencer, Medfluencer)
         
-        **🎯 Processing Options:**
+        ** Processing Options:**
         
         **1. Single URL**: Analyze one media file
         - Paste a single URL and get instant analysis
@@ -1178,7 +1178,7 @@ with st.form("media_analysis_form"):
         - Upload a CSV with ONE column containing only URLs
         - Simple format - just URLs, no group labels needed
         
-        **📁 CSV Format (Simple):**
+        ** CSV Format (Simple):**
         ```
         URLs
         https://example.com/video1.mp4
@@ -1187,18 +1187,18 @@ with st.form("media_analysis_form"):
         https://example.com/image2.jpg
         ```
         
-        **📊 Supported Media:**
+        ** Supported Media:**
         - **Images**: JPG, JPEG, PNG, GIF, BMP, WebP
         - **Videos**: MP4, AVI, MOV, WMV, FLV, WebM, MKV
         
-        **🚀 Performance Features:**
+        ** Performance Features:**
         - **Standard Mode**: Up to 5 URLs simultaneously (< 20 URLs)
         - **Bulk Mode**: Up to 12 URLs simultaneously (≥ 20 URLs)
         - **Smart Timeouts**: Optimized for reliability
         - **Progress Tracking**: Real-time updates during processing
         - **Retry Logic**: Handles temporary failures automatically
         
-        **✅ What you get:**
+        ** What you get:**
         - **Complete analysis** for each URL
         - **CSV download** with all results
         - **Clean data structure** ready for Excel
@@ -1274,7 +1274,7 @@ if csv_file_to_process is None and st.session_state.csv_file_content is not None
         # Ensure we have valid content
         file_content = st.session_state.csv_file_content
         if file_content is None or (isinstance(file_content, bytes) and len(file_content) == 0):
-            st.error("❌ Stored file content is empty. Please upload the file again.")
+            st.error(" Stored file content is empty. Please upload the file again.")
             csv_file_to_process = None
         else:
             if isinstance(file_content, bytes):
@@ -1285,7 +1285,7 @@ if csv_file_to_process is None and st.session_state.csv_file_content is not None
             csv_file_to_process.seek(0)  # Ensure file pointer is at the start
             csv_file_to_process.name = st.session_state.csv_file_name or "uploaded_file.csv"
     except Exception as e:
-        st.error(f"❌ Error recreating file from session state: {str(e)}")
+        st.error(f" Error recreating file from session state: {str(e)}")
         csv_file_to_process = None
 
 csv_url_column = url_column_name if url_column_name else st.session_state.csv_url_column
@@ -1299,27 +1299,27 @@ if submit_csv and csv_file_to_process and prompt and csv_url_column:
             # Process the CSV file
             csv_result = process_csv_file(csv_file_to_process, prompt, csv_url_column)
         except Exception as e:
-            st.error(f"❌ Error preparing file for processing: {str(e)}")
-            st.info("💡 Try uploading the file again.")
+            st.error(f" Error preparing file for processing: {str(e)}")
+            st.info(" Try uploading the file again.")
             csv_result = None
         
         if csv_result:
             enhanced_df, processed_count, url_column = csv_result
             
-            st.success(f"🎉 Successfully processed {processed_count} URLs from CSV!")
+            st.success(f"Successfully processed {processed_count} URLs from CSV!")
             
             # Show summary statistics
             total_products_found = len(enhanced_df[enhanced_df['Produkt'] != 'N/A'])
-            st.info(f"📊 **Analysis Summary**: {total_products_found}/{processed_count} URLs contained detectable products")
+            st.info(f" **Analysis Summary**: {total_products_found}/{processed_count} URLs contained detectable products")
             
             # Display results
-            st.subheader("📋 Analysis Results")
+            st.subheader(" Analysis Results")
             
             # Display the enhanced dataframe
             st.dataframe(enhanced_df, use_container_width=True)
             
             # Download options
-            st.subheader("📥 Download Results")
+            st.subheader(" Download Results")
             
             # Reorder columns for better readability
             download_columns = ['CSV_Row_Number', 'Row_Order', 'Original_URLs', 'URL', 'URL_Count', 'Kategorie I', 'Kategorie II', 'Produkt', 'Anzahl Produkt', 
@@ -1340,7 +1340,7 @@ if submit_csv and csv_file_to_process and prompt and csv_url_column:
             csv_str = csv_buffer.getvalue()
             
             st.download_button(
-                label="📊 Download Complete Analysis Results",
+                label=" Download Complete Analysis Results",
                 data=csv_str,
                 file_name=f"analysis_results_{csv_file_to_process.name if csv_file_to_process else 'results.csv'}",
                 mime="text/csv",
@@ -1349,7 +1349,7 @@ if submit_csv and csv_file_to_process and prompt and csv_url_column:
             )
 else:
     if submit_csv:
-        error_msg = "❌ No CSV file uploaded or processing failed."
+        error_msg = " No CSV file uploaded or processing failed."
         if not csv_file_to_process:
             error_msg += " Please upload a CSV file."
         elif not csv_url_column:
